@@ -34,6 +34,7 @@ void RedBlackTree::Insert(int val) {
   stk.pop();
 
   while (stk.size() > 0) {
+    std::cout << ToString() << std::endl;
     grandparent = stk.top();
     if (!parent->IsBlack() && !child->IsBlack()) {
       // Fix problems with the tree
@@ -43,7 +44,7 @@ void RedBlackTree::Insert(int val) {
         if (childdir != parentdir) {
           FixInside(parent, childdir);
         }
-        FixBlackUncle(grandparent, childdir);
+        FixBlackUncle(grandparent, parentdir);
       } else {
         FixRedUncle(grandparent, childdir);
       }
@@ -139,7 +140,7 @@ std::string RedBlackTree::ToString() {
   while (!stk.empty()) {
     if (stk.top().second == 0) {
       for (int i = 0; i < stk.size(); i++) {
-        ss << " ";
+        ss << "--";
       }
       ss << stk.top().first->Value() << ": "
          << (stk.top().first->IsBlack() ? "black" : "red") << '\n';
