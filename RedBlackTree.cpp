@@ -4,80 +4,10 @@
 #include <sstream>
 #include <iostream>
 
-RedBlackNode::RedBlackNode(int val) : Node::Node(val) {
-  black = false;
-  children[0] = nullptr;
-  children[1] = nullptr;
-}
-
-bool RedBlackNode::IsBlack() { return black; }
-
-void RedBlackNode::SetColor(bool c) { black = c; }
-
-bool RedBlackNode::FlipColor() { return black = !black; }
-
-RedBlackNode *&RedBlackNode::Child(bool dir) {
-  return (RedBlackNode *&)children[dir];
-}
-
 RedBlackTree::RedBlackTree(int rv) {
   root = new RedBlackNode(rv);
   root->SetColor(true);
 }
-
-/* DEBUGGING PURPOSES ONLY - THESE ARE VERY SLOW AND WILL RUN IN O(n) TIME IN
- * ALL CASES */
-
-int RedBlackTree::Deepest() {
-  std::stack<std::pair<int, RedBlackNode *>> nodeStack;
-  int maxDepth = 0;
-  nodeStack.push(std::make_pair(0, root));
-  while (!nodeStack.empty()) {
-    if (nodeStack.top().first == 0) {
-      nodeStack.top().first++;
-      if (nodeStack.top().second->Child(0)) {
-        nodeStack.push(std::make_pair(0, nodeStack.top().second->Child(0)));
-      }
-    } else if (nodeStack.top().first == 1) {
-      nodeStack.top().first++;
-      if (nodeStack.top().second->Child(1)) {
-        nodeStack.push(std::make_pair(0, nodeStack.top().second->Child(1)));
-      }
-    } else {
-      maxDepth = nodeStack.size() > maxDepth ? nodeStack.size() : maxDepth;
-      nodeStack.pop();
-    }
-  }
-  return maxDepth;
-}
-
-int RedBlackTree::Shallowest() {
-  std::stack<std::pair<int, RedBlackNode *>> nodeStack;
-  int minDepth = 0xFFFFFFFF;
-  nodeStack.push(std::make_pair(0, root));
-  while (!nodeStack.empty()) {
-    if (nodeStack.top().first == 0) {
-      nodeStack.top().first++;
-      if (nodeStack.top().second->Child(0)) {
-        nodeStack.push(std::make_pair(0, nodeStack.top().second->Child(0)));
-      }
-    } else if (nodeStack.top().first == 1) {
-      nodeStack.top().first++;
-      if (nodeStack.top().second->Child(1)) {
-        nodeStack.push(std::make_pair(0, nodeStack.top().second->Child(1)));
-      }
-    } else {
-      if (nodeStack.top().second->Child(0) == nullptr &&
-          nodeStack.top().second->Child(1) == nullptr) {
-        minDepth = nodeStack.size() < minDepth ? nodeStack.size() : minDepth;
-      }
-      nodeStack.pop();
-    }
-  }
-  return minDepth;
-}
-
-/* END DEBUGGING */
 
 void RedBlackTree::Insert(int val) {
   // Start with the root node
@@ -229,3 +159,59 @@ std::string RedBlackTree::ToString() {
   }
   return ss.str();
 }
+
+/*****************************DEBUG FUNCTIONS********************************
+ * THESE FUNCTIONS ARE FOR DEBUGGING PURPOSES ONLY. DO NOT USE THEM IN AN
+ * ACTUAL APPLICATION, AS THEY ALL RUN IN O(n) TIME
+ ***************************************************************************/
+
+int RedBlackTree::Deepest() {
+  std::stack<std::pair<int, RedBlackNode *>> nodeStack;
+  int maxDepth = 0;
+  nodeStack.push(std::make_pair(0, root));
+  while (!nodeStack.empty()) {
+    if (nodeStack.top().first == 0) {
+      nodeStack.top().first++;
+      if (nodeStack.top().second->Child(0)) {
+        nodeStack.push(std::make_pair(0, nodeStack.top().second->Child(0)));
+      }
+    } else if (nodeStack.top().first == 1) {
+      nodeStack.top().first++;
+      if (nodeStack.top().second->Child(1)) {
+        nodeStack.push(std::make_pair(0, nodeStack.top().second->Child(1)));
+      }
+    } else {
+      maxDepth = nodeStack.size() > maxDepth ? nodeStack.size() : maxDepth;
+      nodeStack.pop();
+    }
+  }
+  return maxDepth;
+}
+
+int RedBlackTree::Shallowest() {
+  std::stack<std::pair<int, RedBlackNode *>> nodeStack;
+  int minDepth = 0xFFFFFFFF;
+  nodeStack.push(std::make_pair(0, root));
+  while (!nodeStack.empty()) {
+    if (nodeStack.top().first == 0) {
+      nodeStack.top().first++;
+      if (nodeStack.top().second->Child(0)) {
+        nodeStack.push(std::make_pair(0, nodeStack.top().second->Child(0)));
+      }
+    } else if (nodeStack.top().first == 1) {
+      nodeStack.top().first++;
+      if (nodeStack.top().second->Child(1)) {
+        nodeStack.push(std::make_pair(0, nodeStack.top().second->Child(1)));
+      }
+    } else {
+      if (nodeStack.top().second->Child(0) == nullptr &&
+          nodeStack.top().second->Child(1) == nullptr) {
+        minDepth = nodeStack.size() < minDepth ? nodeStack.size() : minDepth;
+      }
+      nodeStack.pop();
+    }
+  }
+  return minDepth;
+}
+
+/* END DEBUGGING */
